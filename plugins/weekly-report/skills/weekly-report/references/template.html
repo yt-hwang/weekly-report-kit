@@ -10,20 +10,23 @@
 /* 주간 성과 대시보드 견본 — 화면 구조는 고정, 내용은 아래 <script> 의 REPORT 객체만 바꾼다.
    섹션: 기간 버튼 → 한 줄 요약 → KPI 4칸 → 퍼널(산키) → 일별 방문 + 유입별 전환 → 콘텐츠 표 + 광고 → 다음 할 일 → 출처 */
 :root {
-  --bg: #f6f8f5; --surface: #ffffff; --ink: #17221a; --muted: #5d6b61; --line: #dde5de;
-  --brand: #2f8a45; --brand-soft: #e3f3e6; --warn: #b5640f; --warn-soft: #fdf0e1; --bad: #b3372b;
-  --bar: var(--brand); --bar-dim: #b9d9c0;
+  /* 브랜드 색 하나(--brand-base)만 바꾸면 연한 톤·막대·다크 모드가 따라온다. REPORT.brandColor 가 이 값을 덮어쓴다. */
+  --brand-base: #2f8a45;
+  --bg: #f7f7f5; --surface: #ffffff; --ink: #1a1d1b; --muted: #5f6662; --line: #e1e4e1;
+  --brand: var(--brand-base); --brand-soft: color-mix(in srgb, var(--brand) 13%, var(--surface));
+  --warn: #b5640f; --warn-soft: #fdf0e1; --bad: #b3372b;
+  --bar: var(--brand); --bar-dim: color-mix(in srgb, var(--brand) 35%, var(--surface));
   --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   --font-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #0f1511; --surface: #18201b; --ink: #e8efe9; --muted: #9aa99e; --line: #2a352d;
-  --brand: #6cc882; --brand-soft: #1d3324; --warn: #f0a85a; --warn-soft: #3a2a17; --bad: #f08a7e;
-  --bar-dim: #2f5a3a; color-scheme: dark } }
+  --bg: #121413; --surface: #1b1e1c; --ink: #e9ecea; --muted: #a0a7a3; --line: #2d322f;
+  --brand: color-mix(in srgb, var(--brand-base) 62%, #ffffff); --warn: #f0a85a; --warn-soft: #3a2a17; --bad: #f08a7e;
+  --bar-dim: color-mix(in srgb, var(--brand) 32%, var(--surface)); --on-brand: #121413; color-scheme: dark } }
 :root[data-theme="dark"] {
-  --bg: #0f1511; --surface: #18201b; --ink: #e8efe9; --muted: #9aa99e; --line: #2a352d;
-  --brand: #6cc882; --brand-soft: #1d3324; --warn: #f0a85a; --warn-soft: #3a2a17; --bad: #f08a7e;
-  --bar-dim: #2f5a3a; color-scheme: dark }
+  --bg: #121413; --surface: #1b1e1c; --ink: #e9ecea; --muted: #a0a7a3; --line: #2d322f;
+  --brand: color-mix(in srgb, var(--brand-base) 62%, #ffffff); --warn: #f0a85a; --warn-soft: #3a2a17; --bad: #f08a7e;
+  --bar-dim: color-mix(in srgb, var(--brand) 32%, var(--surface)); --on-brand: #121413; color-scheme: dark }
 * { box-sizing: border-box }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.6; padding: 0 16px 64px; margin: 0; word-break: keep-all }
 main { max-width: 1240px; margin: 0 auto; display: grid; gap: 24px }
@@ -40,7 +43,7 @@ p { margin: 0 }
 .seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface) }
 .seg button { font: 600 14px var(--font-body); color: var(--muted); background: transparent; border: 0; padding: 8px 14px; cursor: pointer; border-right: 1px solid var(--line); white-space: nowrap }
 .seg button:last-child { border-right: 0 }
-.seg button[aria-pressed="true"] { background: var(--brand); color: var(--surface) }
+.seg button[aria-pressed="true"] { background: var(--brand); color: var(--on-brand, #fff) }
 .seg small { font-weight: 500; opacity: .8; margin-left: 4px }
 header.hd { display: grid; gap: 8px; padding-top: 8px }
 .headline { font-size: 16px; max-width: 80ch }
@@ -106,7 +109,8 @@ footer { font-size: 12px; color: var(--muted) }
 const REPORT = {
   brand: '오븐노트 성과 대시보드',
   title: '오븐노트 주간 성과',
-  brandColor: '',               // 예: '#c2410c' — 비우면 기본 초록
+  brandColor: '#3b5bdb',        // 서비스 대표 색(홈페이지 버튼·로고에서 뽑음). 비우면 기본 초록
+  dropColor: '',                // 선택: 퍼널 '멈춘 사람' 색. 브랜드가 주황·빨강 계열이면 '#8a8f8c'
   current: 'w2',                // 처음 열릴 기간
   periods: [
     { id: 'w1', label: '1주차', range: '9/30–10/6' },
@@ -216,7 +220,7 @@ function render(p) {
   <section aria-label="핵심 숫자">${tiles(d.kpis || [])}</section>
   <section class="panel"><h2>퍼널: ${esc(d.funnel.stages[0][0])}에서 ${esc(d.funnel.stages.at(-1)[0])}까지</h2>
     <div class="sankeywrap">${sankey(d.funnel)}</div>
-    <p class="conv">띠 굵기 = 사람 수(아주 작은 값은 최소 굵기). 초록은 다음 단계로 간 사람, 주황은 그 단계에서 멈춘 사람. 화살표 옆 %는 바로 앞 단계 대비(빨강 = 이번 주 병목), 괄호 안 %는 전체 대비.</p></section>
+    <p class="conv">띠 굵기 = 사람 수(아주 작은 값은 최소 굵기). 진한 색은 다음 단계로 간 사람, 주황(또는 회색)은 그 단계에서 멈춘 사람. 화살표 옆 %는 바로 앞 단계 대비(빨강 = 이번 주 병목), 괄호 안 %는 전체 대비.</p></section>
   <section class="two">
     <div class="panel"><h2>${esc(d.daysTitle || '일별 방문')}</h2>${days.length ? `<div class="daily" role="img" aria-label="일별 방문자">${dayHtml}</div><p class="muted" style="font-size:12px">▼와 진한 막대는 그날 있었던 일(게시·광고 시작 등).</p>` : empty('일별 방문')}</div>
     <div class="panel"><h2>${esc(src.title || '유입 경로별 전환')}</h2>${src.rows.length ? `<div class="bars">${src.rows.map(([n, c, note]) => `<div class="brow"><span style="font-size:14px">${esc(n)}</span><div class="track"><div class="fill" style="width:${(c / srcMax * 100).toFixed(0)}%"></div></div><span class="num" style="text-align:right">${c}</span></div>${note ? `<div class="muted" style="font-size:12px;margin-top:-4px">${esc(note)}</div>` : ''}`).join('')}</div>` : empty('유입 경로')}${src.note ? `<p class="muted" style="font-size:13px">${esc(src.note)}</p>` : ''}</div>
@@ -233,7 +237,8 @@ function render(p) {
 
 document.title = REPORT.brand;
 document.getElementById('brand').textContent = REPORT.brand;
-if (REPORT.brandColor) document.documentElement.style.setProperty('--brand', REPORT.brandColor);
+if (REPORT.brandColor) document.documentElement.style.setProperty('--brand-base', REPORT.brandColor);
+if (REPORT.dropColor) document.documentElement.style.setProperty('--warn', REPORT.dropColor); // 브랜드가 주황·빨강 계열이면 '멈춘 사람' 색을 회색 등으로
 document.getElementById('seg').innerHTML = REPORT.periods.map(x => `<button type="button" data-p="${esc(x.id)}">${esc(x.label)}<small>${esc(x.range)}</small></button>`).join('');
 document.querySelectorAll('#seg button').forEach(bt => bt.addEventListener('click', () => render(bt.dataset.p)));
 let start = REPORT.current;
