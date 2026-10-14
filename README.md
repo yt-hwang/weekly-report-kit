@@ -9,7 +9,7 @@
 
 ### A. Claude Code 플러그인 (매주 쓸 사람)
 ```
-/plugin marketplace add <github-id>/weekly-report-kit
+/plugin marketplace add yt-hwang/weekly-report-kit
 /plugin install weekly-report@weekly-report-kit
 ```
 그다음 아무 폴더에서 "주간 보고서 만들어줘". 처음엔 쓰는 채널을 묻고 `weekly-report.config.json` 으로 저장, 다음 주부터는 캡처만 주면 됩니다.
