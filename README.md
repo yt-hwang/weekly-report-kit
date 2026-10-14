@@ -12,7 +12,11 @@
 /plugin marketplace add yt-hwang/weekly-report-kit
 /plugin install weekly-report@weekly-report-kit
 ```
-그다음 아무 폴더에서 "주간 보고서 만들어줘". 처음엔 쓰는 채널을 묻고 `weekly-report.config.json` 으로 저장, 다음 주부터는 캡처만 주면 됩니다.
+명령어가 낯설면 Claude Code 에 이렇게만 말해도 됩니다 — Claude 가 설치 명령을 대신 실행합니다(실행 허락만 누르면 됨):
+```
+https://github.com/yt-hwang/weekly-report-kit 플러그인 설치해줘
+```
+설치 후 Claude Code 를 새로 열면 적용됩니다. 그다음 아무 폴더에서 "주간 보고서 만들어줘". 처음엔 쓰는 채널을 묻고 `weekly-report.config.json` 으로 저장, 다음 주부터는 캡처만 주면 됩니다.
 
 ### B. 프롬프트만 (claude.ai 대화창에서 한 번 써 보기)
 [`PROMPT.md`](PROMPT.md) 의 상자를 복사해 붙이고, [`template.html`](plugins/weekly-report/skills/weekly-report/references/template.html) 을 첨부하세요.

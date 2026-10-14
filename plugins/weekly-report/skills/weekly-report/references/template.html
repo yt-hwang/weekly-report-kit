@@ -170,9 +170,9 @@ const empty = what => `<p class="empty">${esc(what)} — 이 채널은 아직 �
 
 // 산키 퍼널: 단계 3~7개. 띠 굵기 = 사람 수, 초록 = 다음 단계로 간 사람, 주황 = 그 단계에서 멈춘 사람 → 오른쪽 '최종 결과'
 function sankey(f) {
-  const st = f.stages, v = st[0][1] || 1, n = st.length, k = 330 / v, MIN = 3, NW = 14, T = 62, GAP = 12, SHIFT = 30, XF = 1010;
+  const st = f.stages, v = st[0][1] || 1, n = st.length, k = 330 / v, MIN = 3, NW = 14, T = 62, GAP = 12, SHIFT = 30, XF = 960;
   const H = x => x > 0 ? Math.max(MIN, x * k) : 0;
-  const xs = st.map((_, i) => Math.round(30 + i * (860 - 30) / (n - 1)));
+  const xs = st.map((_, i) => Math.round(30 + i * (830 - 30) / (n - 1)));
   const band = (x1, a1, b1, x2, a2, b2, cls) => { const m = (x1 + x2) / 2; return `<path class="${cls}" d="M${x1},${a1.toFixed(1)} C${m},${a1.toFixed(1)} ${m},${a2.toFixed(1)} ${x2},${a2.toFixed(1)} L${x2},${b2.toFixed(1)} C${m},${b2.toFixed(1)} ${m},${b1.toFixed(1)} ${x1},${b1.toFixed(1)} Z"/>`; };
   const last = st[n - 1][1];
   const outs = [['done', f.done || '끝까지 감', last]];
@@ -203,7 +203,7 @@ function sankey(f) {
     texts.push(`<text class="ol${good ? ' good' : ''}" x="${XF + NW + 8}" y="${((a + b) / 2 + 4).toFixed(1)}">${esc(lab)} ${c} · ${(c / v * 100).toFixed(1)}%</text>`);
   }
   texts.push(`<text class="hd" x="${XF}" y="${T - 38}">최종 결과</text><text class="nv" x="${XF}" y="${T - 22}">${v}${esc(unit)}이 어디서 멈췄나</text>`);
-  return `<svg class="sankey" viewBox="0 0 1200 ${Math.ceil(y + 10)}" role="img" aria-label="${esc(st.map(s => s[0] + ' ' + s[1]).join(', '))}">${bands.join('')}${nodes.join('')}${texts.join('')}</svg>`;
+  return `<svg class="sankey" viewBox="0 0 1240 ${Math.ceil(y + 10)}" role="img" aria-label="${esc(st.map(s => s[0] + ' ' + s[1]).join(', '))}">${bands.join('')}${nodes.join('')}${texts.join('')}</svg>`;
 }
 
 const tiles = (arr, size) => `<div class="kpis"${size ? ` style="grid-template-columns:repeat(${Math.min(arr.length, 4)},minmax(0,1fr))"` : ''}>${arr.map(([v, l, s]) => `<div class="kpi"><span class="v num"${size ? ` style="font-size:${size}px"` : ''}>${esc(v)}</span><span class="l">${esc(l)}</span><span class="d">${esc(s)}</span></div>`).join('')}</div>`;
