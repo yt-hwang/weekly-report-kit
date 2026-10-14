@@ -1,0 +1,31 @@
+{
+  "business": { "name": "오븐노트", "oneLiner": "온라인 홈베이킹 클래스", "audience": "팀 주간 회의" },
+  "week": { "startDay": "wed", "timezone": "Asia/Seoul" },
+  "funnel": [
+    { "label": "방문", "source": "naver-analytics", "metric": "방문 수" },
+    { "label": "수강 신청 클릭", "source": "naver-analytics", "metric": "신청 버튼 클릭 이벤트" },
+    { "label": "체험 신청", "source": "db", "metric": "trial_signups 생성 수" },
+    { "label": "첫 수업 참여", "source": "db", "metric": "첫 출석 기록" },
+    { "label": "유료 결제", "source": "toss", "metric": "결제 완료(환불 제외)" }
+  ],
+  "drops": ["클릭 안 함", "신청 안 함", "수업 안 옴", "결제 안 함"],
+  "done": "결제 완료",
+  "channels": {
+    "analytics": ["naver-analytics"],
+    "ads": ["naver-searchad", "kakao-moment"],
+    "social": ["instagram", "naver-blog"],
+    "signups": ["db"],
+    "payments": ["toss"]
+  },
+  "howToFetch": {
+    "naver-analytics": "엑셀 다운로드",
+    "naver-searchad": "다차원 보고서 캡처",
+    "kakao-moment": "캠페인 보고서 캡처",
+    "instagram": "게시물 인사이트 캡처",
+    "naver-blog": "통계 캡처",
+    "db": "SQL: select count(*) … where created_at between …"
+  },
+  "currency": "KRW",
+  "brandColor": "#c2410c",
+  "reportsDir": "reports/weekly"
+}

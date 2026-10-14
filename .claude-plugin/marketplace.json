@@ -1,0 +1,12 @@
+{
+  "name": "weekly-report-kit",
+  "owner": { "name": "Com2Worship" },
+  "metadata": { "description": "채널이 달라도 같은 틀로 만드는 주간 성과 보고서" },
+  "plugins": [
+    {
+      "name": "weekly-report",
+      "source": "./plugins/weekly-report",
+      "description": "방문→가입→결제 산키 퍼널, 일별 방문과 그날 한 일, 유입·콘텐츠·광고, 다음 할 일 — 한 장짜리 주간 대시보드"
+    }
+  ]
+}
